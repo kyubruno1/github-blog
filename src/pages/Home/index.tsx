@@ -1,7 +1,7 @@
 import { Card } from "../../components/Card";
 import { Header } from "../../components/Header";
 import { Profile } from "../../components/Profile";
-import { HomeContainer } from "./styles";
+import { ContentContainer, FormContainer, HomeContainer } from "./styles";
 
 export function Home() {
   return (
@@ -10,8 +10,20 @@ export function Home() {
       <HomeContainer>
         <Profile />
 
+        <FormContainer>
+          <div>
+            <span>Publicações</span>
+            <span>6 publicações</span>
+          </div>
+          <input type="text" placeholder="Buscar conteúdo" />
+        </FormContainer>
 
-        <Card />
+        <ContentContainer>
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+        </ContentContainer>
 
       </HomeContainer>
     </>
