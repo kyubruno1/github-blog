@@ -4,6 +4,7 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 
 export interface Issue {
   id: number,
+  number: number,
   title: string,
   user: {
     login: string,
@@ -13,9 +14,16 @@ export interface Issue {
   body: string
 }
 
+export interface IssueUnit {
+  title: string,
+  body: string,
+}
+
 interface IssueContextType {
-  issue: Issue[];
+  issues: Issue[];
   fetchIssues: (query?: string) => Promise<void>
+  fetchIssueUnit: (query?: string) => Promise<void>,
+  issueUnit: IssueUnit
 }
 
 interface IssueProviderProps {
@@ -26,7 +34,7 @@ export const IssuesContext = createContext({} as IssueContextType)
 
 export function IssueProvider({ children }: IssueProviderProps) {
 
-  const [issue, setIssue] = useState<Issue[]>([]);
+  const [issues, setIssues] = useState<Issue[]>([]);
 
   async function fetchIssues(query?: string) {
     let searchQuery = ''
@@ -43,6 +51,7 @@ export function IssueProvider({ children }: IssueProviderProps) {
 
     const issues = response.data.items.map((issue: Issue) => ({
       id: issue.id,
+      number: issue.number,
       title: issue.title,
       user: {
         login: issue.user.login,
@@ -52,15 +61,33 @@ export function IssueProvider({ children }: IssueProviderProps) {
       body: issue.body
     }))
 
-    setIssue(issues)
+    setIssues(issues)
   }
 
   useEffect(() => {
     fetchIssues()
   }, [])
 
+  const [issueUnit, setIssueUnit] = useState<IssueUnit>({
+    title: '',
+    body: '',
+  });
+
+  async function fetchIssueUnit(query?: number) {
+    const response = await axios.get(`https://api.github.com/repos/kyubruno1/github-blog/issues/${query}`)
+
+    const issueUnitData: IssueUnit = {
+      title: response.data.title,
+      body: response.data.body
+    }
+
+    setIssueUnit(issueUnitData)
+
+  }
+
+
   return (
-    <IssuesContext.Provider value={{ issue, fetchIssues }}>
+    <IssuesContext.Provider value={{ issues, fetchIssues, fetchIssueUnit, issueUnit }}>
       {children}
     </IssuesContext.Provider>
   )

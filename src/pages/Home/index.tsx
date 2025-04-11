@@ -7,7 +7,7 @@ import { IssuesContext } from "../../context/IssuesContext";
 import { SearchForm } from "./Components/SearchForm";
 
 export function Home() {
-  const { issue } = useContext(IssuesContext)
+  const { issues } = useContext(IssuesContext)
 
   return (
     <>
@@ -18,13 +18,13 @@ export function Home() {
         <FormContainer>
           <div>
             <span>Publicações</span>
-            <span>{issue.length} publicações</span>
+            <span>{issues.length} publicações</span>
           </div>
           <SearchForm />
         </FormContainer>
 
         <ContentContainer>
-          {issue.map((iss) => {
+          {issues.map((iss) => {
             return (
               <Card {...iss} key={iss.id} />
             )

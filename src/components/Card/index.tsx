@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Issue } from "../../context/IssuesContext";
 import { CardContainer } from "./styles";
 import { formatDistanceToNow } from 'date-fns'
@@ -12,8 +13,10 @@ export function Card(data: Issue) {
   })
 
 
+  const navigate = useNavigate()
+
   function handleClick() {
-    console.log('click')
+    navigate(`/post/${data.number}`)
   }
 
   return (
