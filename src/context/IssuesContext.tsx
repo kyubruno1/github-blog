@@ -15,6 +15,7 @@ export interface Issue {
 
 interface IssueContextType {
   issue: Issue[];
+  fetchIssues: (query?: string) => Promise<void>
 }
 
 interface IssueProviderProps {
@@ -27,10 +28,20 @@ export function IssueProvider({ children }: IssueProviderProps) {
 
   const [issue, setIssue] = useState<Issue[]>([]);
 
-  async function fetchIssues() {
-    const response = await axios.get('https://api.github.com/search/issues?q=author:kyubruno1')
+  async function fetchIssues(query?: string) {
+    let searchQuery = ''
 
-    const issues = response.data.items.map((issue: any) => ({
+    if (query && query.trim() !== '') {
+      // Se a query for passada, monta com base nela
+      searchQuery = `${query} repo:kyubruno1/github-blog`
+    } else {
+      // Se não for passada, busca todas as issues do repositório
+      searchQuery = `repo:kyubruno1/github-blog`
+    }
+
+    const response = await axios.get(`https://api.github.com/search/issues?q=${encodeURIComponent(searchQuery)}`)
+
+    const issues = response.data.items.map((issue: Issue) => ({
       id: issue.id,
       title: issue.title,
       user: {
@@ -49,7 +60,7 @@ export function IssueProvider({ children }: IssueProviderProps) {
   }, [])
 
   return (
-    <IssuesContext.Provider value={{ issue }}>
+    <IssuesContext.Provider value={{ issue, fetchIssues }}>
       {children}
     </IssuesContext.Provider>
   )
