@@ -10,12 +10,14 @@ export const CardContainer = styled.div`
   flex-direction: column;
   gap: 1.125rem;
   border: 2px solid transparent;
+  
 
   div {
     width: 100%;
     display: flex;
     align-items: space-between;
     gap: 1rem;
+    justify-content: space-between;
   }
 
   h3 {

@@ -1,9 +1,13 @@
+import { useContext } from "react";
 import { Card } from "../../components/Card";
 import { Header } from "../../components/Header";
 import { Profile } from "../../components/Profile";
 import { ContentContainer, FormContainer, HomeContainer } from "./styles";
+import { IssuesContext } from "../../context/IssuesContext";
 
 export function Home() {
+  const { issue } = useContext(IssuesContext)
+
   return (
     <>
       <Header />
@@ -13,16 +17,18 @@ export function Home() {
         <FormContainer>
           <div>
             <span>Publicações</span>
-            <span>6 publicações</span>
+            <span>{issue.length} publicações</span>
           </div>
           <input type="text" placeholder="Buscar conteúdo" />
         </FormContainer>
 
         <ContentContainer>
-          <Card />
-          <Card />
-          <Card />
-          <Card />
+          {issue.map((iss) => {
+            return (
+              <Card {...iss} key={iss.id} />
+            )
+          })}
+
         </ContentContainer>
 
       </HomeContainer>

@@ -2,23 +2,48 @@ import { ImageProfile, ProfileBio, ProfileContainer, ProfileInfo, ProfilePresent
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUpRightFromSquare, faBuilding, faUsers } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import logo from '../../assets/Logo.svg'
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+export interface ProfileType {
+  login: string;
+  name: string;
+  bio: string;
+  company: string;
+  avatar_url: string;
+  followers: number;
+  public_repos: number;
+}
+
 
 export function Profile() {
+
+  const [user, setUser] = useState<ProfileType | null>(null)
+  useEffect(() => {
+    async function fetchUser() {
+      const response = await axios.get('https://api.github.com/users/kyubruno1')
+      setUser(response.data)
+    }
+
+    fetchUser()
+  }, [])
+
+
+  if (!user) return <p>Loading...</p>
+
   return (
-    /* Separar em duas divs para separar img | texto */
     <ProfileContainer>
-      <ImageProfile src={logo} alt="" />
+      <ImageProfile src={user.avatar_url} alt="" />
       <div>
         <ProfilePresentation>
-          <p>Bruno Ribeiro</p>
+          <p>{user.name}</p>
           <span>Github <FontAwesomeIcon icon={faUpRightFromSquare} /></span>
         </ProfilePresentation>
-        <ProfileBio>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquid, ratione. Vero atque natus nulla similique, nostrum officia sit veniam facere maiores velit sequi, reiciendis expedita vitae ipsum. Eos, ea saepe.</ProfileBio>
+        <ProfileBio>{user.bio}</ProfileBio>
         <ProfileInfo>
-          <span><FontAwesomeIcon icon={faGithub} /> github_user</span>
-          <span><FontAwesomeIcon icon={faBuilding} /> github_company</span>
-          <span><FontAwesomeIcon icon={faUsers} /> github_followers</span>
+          <span><FontAwesomeIcon icon={faGithub} /> {user.login}</span>
+          {user.company && <span><FontAwesomeIcon icon={faBuilding} /> {user.company}</span>}
+          <span><FontAwesomeIcon icon={faUsers} /> {user.followers} seguidores</span>
         </ProfileInfo>
       </div>
 
